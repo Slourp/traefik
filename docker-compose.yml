@@ -1,0 +1,22 @@
+version: "3.3"
+services:
+  traefik:
+    image: "traefik:latest"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./letsencrypt:/letsencrypt
+      - ./etc/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./etc/traefik/config/:/etc/traefik/config/:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    logging:
+      driver: none
+    networks:
+      - traefik-proxy
+    restart: always
+
+networks:
+    traefik-proxy:
+        external: true
+

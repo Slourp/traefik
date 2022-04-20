@@ -1,0 +1,40 @@
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false
+
+log:
+  level: INFO
+
+api:
+  insecure: false
+
+entryPoints:
+    web:
+      address: :80
+      http:
+        redirections:
+           entryPoint:
+              to: websecure
+              scheme: https
+              permanent: true
+
+
+    websecure:
+      address: :443
+
+
+providers:
+  docker:
+    exposedByDefault: false
+
+  file:
+    directory: /etc/traefik/config/
+    watch: true
+
+certificatesResolvers:
+  myhttpchallenge:
+    acme:
+      email: "olivier.grandmougin@pop-europe.com"
+      storage: "/letsencrypt/acme.json"
+      httpChallenge:
+        entryPoint: web
