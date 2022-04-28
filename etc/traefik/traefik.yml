@@ -34,7 +34,7 @@ providers:
 certificatesResolvers:
   myhttpchallenge:
     acme:
-      email: "olivier.grandmougin@pop-europe.com"
+      email: "david.vanmak@pop-europe.fr"
       storage: "/letsencrypt/acme.json"
       httpChallenge:
         entryPoint: web

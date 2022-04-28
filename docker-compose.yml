@@ -2,6 +2,7 @@ version: "3.8"
 services:
   traefik:
     image: "traefik:latest"
+    container_name: TRAEFIK
     ports:
       - "80:80"
       - "443:443"
@@ -10,8 +11,6 @@ services:
       - ./etc/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
       - ./etc/traefik/config/:/etc/traefik/config/:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    logging:
-      driver: none
     networks:
       - traefik-proxy
     restart: always
