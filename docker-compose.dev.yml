@@ -1,0 +1,69 @@
+version: '3.7'
+services:
+  traefik:
+    restart: unless-stopped
+    image: traefik:v2.4
+
+    container_name: ${PROJECT_NAME}_TRAEFIK
+    ports:
+      - "80:80"
+      - "443:443"
+    labels:
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+      # Dashboard
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`dashboard.traefik.me`)"
+      - "traefik.http.routers.dashboard-tls.tls.domains[0].main=dashboard.traefik.me"
+      - "traefik.http.routers.dashboard-tls.tls.domains[0].sans=dashboard-*.traefik.me"
+      - "traefik.http.routers.dashboard.tls=true"
+      - "traefik.http.routers.traefik.service=api@internal"
+
+
+      # htaccess password
+      # - "traefik.http.routers.traefik.middlewares=auth"
+      # - "traefik.http.middlewares.auth.basicauth.users=user:$$apr1$$q8eZFHjF$$Fvmkk//V6Btlaf2i/ju5n/" # user/password
+    volumes:
+      - ./docker/traefik/traefik.dev.yml:/etc/traefik/traefik.yml
+      - ./docker/traefik/tls.yml:/etc/traefik/tls.yml
+      - /var/run/docker.sock:/var/run/docker.sock
+      - certs:/etc/ssl/traefik
+
+    networks:
+        - dev
+
+  reverse-proxy-https-helper:
+    image: alpine
+    container_name: ${PROJECT_NAME}_PROXY_HELPER
+    command: sh -c "cd /etc/ssl/traefik
+      && wget traefik.me/cert.pem -O cert.pem
+      && wget traefik.me/privkey.pem -O privkey.pem"
+    volumes:
+      - certs:/etc/ssl/traefik
+    networks:
+      - dev
+
+  portainer-ce:
+    container_name: ${PROJECT_NAME}_PORTAINER
+    image: portainer/portainer-ce
+    restart: always
+    labels:
+      # permet de créer un routeur Traefik
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.traefik.me`)"
+      - "traefik.http.routers.portainer-tls.tls.domains[0].main=portainer.traefik.me"
+      - "traefik.http.routers.portainer-tls.tls.domains[0].sans=portainer-*.traefik.me"
+      - "traefik.http.routers.portainer.tls=true"
+      # # Set password
+      # - "traefik.http.routers.portainer.middlewares=auth"
+      # - "traefik.http.middlewares.auth.basicauth.users=user:$$apr1$$q8eZFHjF$$Fvmkk//V6Btlaf2i/ju5n/" # user/password
+    volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+    env_file:
+      - .env
+    networks:
+      - dev
+networks:
+  dev:
+volumes:
+  mysqldata: {}
+  certs:

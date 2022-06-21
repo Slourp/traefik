@@ -36,16 +36,3 @@ certificatesResolvers:
       storage: "/letsencrypt/acme.json"
       httpChallenge:
         entryPoint: web
-  # zerossl:
-  #   acme:
-  #     caServer: https://acme.zerossl.com/v2/DV90
-  #     email: "david.vanmak@pop-france.eu"
-  #     storage: acme.json
-  #     dnsChallenge:
-  #       provider: cloudflare
-  #       resolvers:
-  #         - "1.1.1.1:53"
-  #         - "1.0.0.1:53"
-  #     eab:
-  #       kid: Ge49Yy_B-gCcD_Y2dHBHYA
-  #       hmacEncoded: 5EE1R88bYHNSr0tzGVV0JQ1fRNYpw3XXKblP_ZXuaCFl_LhAJ4eS4aWJWiYVkx-OK8rjAmhP7IoxigJ3lf7FaA
