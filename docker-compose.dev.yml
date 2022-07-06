@@ -2,7 +2,7 @@ version: '3.7'
 services:
   traefik:
     restart: unless-stopped
-    image: traefik:v2.4
+    image: traefik:latest
 
     container_name: ${PROJECT_NAME}_TRAEFIK
     ports:
@@ -41,30 +41,8 @@ services:
       - certs:/etc/ssl/traefik
     networks:
       - dev
-
-  portainer-ce:
-    container_name: ${PROJECT_NAME}_PORTAINER
-    image: portainer/portainer-ce
-    restart: always
-    labels:
-      # permet de créer un routeur Traefik
-      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
-      - "traefik.http.routers.portainer.rule=Host(`portainer.traefik.me`)"
-      - "traefik.http.routers.portainer-tls.tls.domains[0].main=portainer.traefik.me"
-      - "traefik.http.routers.portainer-tls.tls.domains[0].sans=portainer-*.traefik.me"
-      - "traefik.http.routers.portainer.tls=true"
-      # # Set password
-      # - "traefik.http.routers.portainer.middlewares=auth"
-      # - "traefik.http.middlewares.auth.basicauth.users=user:$$apr1$$q8eZFHjF$$Fvmkk//V6Btlaf2i/ju5n/" # user/password
-    volumes:
-          - /var/run/docker.sock:/var/run/docker.sock
-    env_file:
-      - .env
-    networks:
-      - dev
 networks:
     dev:
         external: true
 volumes:
-  mysqldata: {}
   certs:
