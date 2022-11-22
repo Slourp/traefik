@@ -29,7 +29,7 @@ services:
       - certs:/etc/ssl/traefik
 
     networks:
-        - dev
+        - default
 
   reverse-proxy-https-helper:
     image: alpine
@@ -40,9 +40,9 @@ services:
     volumes:
       - certs:/etc/ssl/traefik
     networks:
-      - dev
+      - default
 networks:
-    dev:
-        external: true
+  default:
+      name: dev
 volumes:
   certs:
