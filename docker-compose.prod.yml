@@ -16,8 +16,8 @@ services:
       - ./etc/traefik/config/:/etc/traefik/config/:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
-      - traefik-proxy
+      - default
     restart: always
 networks:
-  traefik-proxy:
-    external: true
+  default:
+    name: traefik-proxy
