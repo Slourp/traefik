@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.8'
 services:
   traefik:
     restart: unless-stopped
@@ -17,8 +17,6 @@ services:
       - "traefik.http.routers.dashboard-tls.tls.domains[0].sans=dashboard-*.traefik.me"
       - "traefik.http.routers.dashboard.tls=true"
       - "traefik.http.routers.traefik.service=api@internal"
-
-
       # htaccess password
       # - "traefik.http.routers.traefik.middlewares=auth"
       # - "traefik.http.middlewares.auth.basicauth.users=user:$$apr1$$q8eZFHjF$$Fvmkk//V6Btlaf2i/ju5n/" # user/password
@@ -29,20 +27,18 @@ services:
       - certs:/etc/ssl/traefik
 
     networks:
-        - default
+      - default
 
   reverse-proxy-https-helper:
     image: alpine
     container_name: ${PROJECT_NAME}_PROXY_HELPER
-    command: sh -c "cd /etc/ssl/traefik
-      && wget traefik.me/cert.pem -O cert.pem
-      && wget traefik.me/privkey.pem -O privkey.pem"
+    command: sh -c "cd /etc/ssl/traefik && wget traefik.me/cert.pem -O cert.pem && wget traefik.me/privkey.pem -O privkey.pem"
     volumes:
       - certs:/etc/ssl/traefik
     networks:
       - default
 networks:
   default:
-      name: dev
+    name: dev
 volumes:
   certs:
