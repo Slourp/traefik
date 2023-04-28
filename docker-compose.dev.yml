@@ -4,7 +4,7 @@ services:
     restart: unless-stopped
     image: traefik:latest
 
-    container_name: ${PROJECT_NAME}_TRAEFIK
+    container_name: ${PROJECT_NAME:-TRAEFIK}_TRAEFIK
     ports:
       - "80:80"
       - "443:443"
